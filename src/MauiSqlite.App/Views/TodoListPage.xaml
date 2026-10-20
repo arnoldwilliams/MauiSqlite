@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MauiSqlite.App.Views.TodoListPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:MauiSqlite.App.Converters"
+    xmlns:models="clr-namespace:MauiSqlite.Core.Models;assembly=MauiSqlite.Core"
+    xmlns:viewmodels="clr-namespace:MauiSqlite.Core.ViewModels;assembly=MauiSqlite.Core"
+    x:Name="Page"
+    x:DataType="viewmodels:TodoListViewModel"
+    Title="My Tasks">
+
+    <ContentPage.Resources>
+        <converters:PriorityToColorConverter x:Key="PriorityToColor" />
+    </ContentPage.Resources>
+
+    <Grid
+        Padding="16"
+        RowDefinitions="Auto,Auto,*"
+        RowSpacing="12">
+
+        <!--  Editor  -->
+        <Border
+            Grid.Row="0"
+            Padding="12"
+            Stroke="#E0E0E0"
+            StrokeShape="RoundRectangle 12">
+            <VerticalStackLayout Spacing="8">
+                <Entry Placeholder="What needs to be done?" ReturnType="Done" Text="{Binding NewTitle}" />
+
+                <Entry Placeholder="Notes (optional)" Text="{Binding NewNotes}" />
+
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                    <Picker
+                        Grid.Column="0"
+                        ItemsSource="{Binding Priorities}"
+                        SelectedItem="{Binding NewPriority}"
+                        Title="Priority" />
+                    <DatePicker
+                        Grid.Column="1"
+                        Date="{Binding NewDueDate}"
+                        Format="MM/dd/yyyy"
+                        MinimumDate="2020-01-01" />
+                </Grid>
+
+                <Button
+                    Command="{Binding AddCommand}"
+                    HorizontalOptions="End"
+                    Text="Add task" />
+            </VerticalStackLayout>
+        </Border>
+
+        <!--  Toolbar  -->
+        <Grid
+            Grid.Row="1"
+            ColumnDefinitions="*,Auto"
+            ColumnSpacing="8">
+            <Label
+                Grid.Column="0"
+                FontAttributes="Bold"
+                FontSize="20"
+                Text="Tasks" />
+            <Button
+                Grid.Column="1"
+                Command="{Binding ClearCompletedCommand}"
+                Text="Clear completed" />
+        </Grid>
+
+        <!--  List  -->
+        <RefreshView
+            Grid.Row="2"
+            Command="{Binding LoadCommand}"
+            IsRefreshing="{Binding IsBusy}">
+            <CollectionView ItemsSource="{Binding Items}" SelectionMode="None">
+                <CollectionView.EmptyView>
+                    <Label
+                        Margin="0,40,0,0"
+                        HorizontalOptions="Center"
+                        Text="Nothing here yet. Add your first task above." />
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:TodoItem">
+                        <Border
+                            Margin="0,4"
+                            Padding="12"
+                            Stroke="#E0E0E0"
+                            StrokeShape="RoundRectangle 12">
+                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                                <CheckBox
+                                    Grid.Column="0"
+                                    IsChecked="{Binding IsCompleted, Mode=OneWay}"
+                                    IsEnabled="False"
+                                    VerticalOptions="Center" />
+                                <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="16"
+                                        Text="{Binding Title}">
+                                        <Label.Triggers>
+                                            <DataTrigger
+                                                Binding="{Binding IsCompleted}"
+                                                TargetType="Label"
+                                                Value="True">
+                                                <Setter Property="TextDecorations" Value="Strikethrough" />
+                                                <Setter Property="TextColor" Value="#9E9E9E" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                    <Label
+                                        FontSize="12"
+                                        Text="{Binding Notes}"
+                                        TextColor="#616161" />
+                                </VerticalStackLayout>
+                                <HorizontalStackLayout Grid.Column="2" Spacing="8">
+                                    <BoxView
+                                        Color="{Binding Priority, Converter={StaticResource PriorityToColor}}"
+                                        CornerRadius="4"
+                                        HeightRequest="12"
+                                        VerticalOptions="Center"
+                                        WidthRequest="12" />
+                                    <Button
+                                        Command="{Binding BindingContext.ToggleCommand, Source={x:Reference Page}}"
+                                        CommandParameter="{Binding .}"
+                                        Text="Toggle" />
+                                    <Button
+                                        Command="{Binding BindingContext.DeleteCommand, Source={x:Reference Page}}"
+                                        CommandParameter="{Binding .}"
+                                        Text="Delete" />
+                                </HorizontalStackLayout>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+    </Grid>
+</ContentPage>
