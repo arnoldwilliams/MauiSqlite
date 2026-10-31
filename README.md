@@ -55,3 +55,11 @@ Windows, macOS, and Linux.
   `ITodoRepository` interface, which keeps it testable with Moq.
 - The SQLite repository is covered by tests that run against an isolated
   in-memory database, so the real SQL is exercised without touching disk.
+
+## Documentation
+
+- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) - full architecture document
+  (system context, use cases, class diagrams, software patterns, and hardware
+  and software requirements).
+- [`docs/ARCHITECTURE.pdf`](docs/ARCHITECTURE.pdf) - the same document as a PDF,
+  with the diagrams rendered as images.
