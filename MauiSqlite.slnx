@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/MauiSqlite.App/MauiSqlite.App.csproj" />
+    <Project Path="src/MauiSqlite.Core/MauiSqlite.Core.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/MauiSqlite.Tests/MauiSqlite.Tests.csproj" />
+  </Folder>
+</Solution>
